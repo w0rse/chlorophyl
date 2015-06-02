@@ -1,0 +1,30 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	background: #3F51B5;
+	font-family: Arial, sans-serif;
+	color: #fff;
+}
+a {
+	color: #fff;
+	text-decoration: none;
+}
+header {
+	font-size: 1.7em;
+	background: #3949AB;
+	height: 73px;
+}
+header a {
+	display: inline-block;
+	padding: 20px;
+	transition: all 0.5s;
+	float: left;
+}
+header a:hover {
+	background: #303F9F;
+}
+
+article {
+	width: 640px;
+	margin: 30px auto 0;
+}
