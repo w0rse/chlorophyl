@@ -28,3 +28,15 @@ article {
 	width: 640px;
 	margin: 30px auto 0;
 }
+
+#history-data {
+	border: 1px solid #fff;
+	font-size: 12px;
+}
+#history-data span {
+	display: inline-block;
+	padding: 5px;
+}
+#history-data .report-date {
+	width: 200px;
+}

@@ -1,15 +1,28 @@
 from PIL import Image, ImageDraw, ImageStat
-import urllib, urllib2, json, base64, cStringIO
+import urllib, urllib2, json, base64, cStringIO, os, sys, time
+#import SendKeys
 
 config = json.loads(open('config.json', 'r').read())
 WIDTH = 640
 HEIGHT = 480
 
 state = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
-
 print state
 
-im = Image.open("thai.png")
+#SendKeys.SendKeys('^l')
+time.sleep(10)
+
+max_mtime = 0
+for dirname, subdirs, files in os.walk("../pictures"):
+	for fname in files:
+		full_path = os.path.join(dirname, fname)
+		mtime = os.stat(full_path).st_mtime
+		if mtime > max_mtime:
+			max_mtime = mtime
+			max_file = full_path
+
+print 'reading '+max_file
+im = Image.open(max_file)
 result = []
 
 def getCoordinate(x, y):
@@ -33,6 +46,7 @@ im = im.resize((WIDTH, HEIGHT))
 
 jpeg_image_buffer = cStringIO.StringIO()
 im.save(jpeg_image_buffer, format="PNG")
+#im.save(jpeg_image_buffer, format="JPEG")
 image_string = base64.b64encode(jpeg_image_buffer.getvalue())
 
 print result

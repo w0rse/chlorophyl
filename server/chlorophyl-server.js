@@ -36,6 +36,11 @@ app.get('/assets/:file', function (req, res) {
 app.get('/get_config', function (req, res) {
 	res.send(config);
 });
+app.get('/get_data', function (req, res) {
+	models.Report.find({}, 'date values').sort('-date').exec(function(err, doc) {
+		res.send(doc);
+	});
+});
 app.get('/get_last_pic', function (req, res) {
 	models.Report.findOne({'picture': {'$ne': ''}}).sort('-date').exec(function(err, doc) {
 		res.send(doc);

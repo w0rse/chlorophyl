@@ -6,10 +6,12 @@ var HEIGHT = 480;
 var regions = [];
 var drawing = false;
 var activeRect;
-var currentImage;
+var currentImage, currentValues;
 
 var ctx = $('canvas')[0].getContext('2d');
 ctx.strokeStyle = 'white';
+ctx.fillStyle = 'white';
+ctx.font = '14px Arial, sans-serif';
 
 $('#canvas').on('mousedown', function(e) {
 	drawing = true;
@@ -34,6 +36,7 @@ $('#canvas').on('mousedown', function(e) {
 	} else {
 		removeRegionsHere({x: e.offsetX, y: e.offsetY});
 	}
+	currentValues = null;
 	activeRect = null;
 	draw();
 	saveRegions();
@@ -44,6 +47,14 @@ $('#canvas').on('mousedown', function(e) {
 		requestAnimationFrame(draw);
 	}
 });
+$(window).on('hashchange', function() {
+	if (!location.hash) {
+		return;
+	}
+	$('article').hide();
+	$(location.hash).show();
+});
+$(window).trigger('hashchange');
 
 function draw () {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -53,8 +64,11 @@ function draw () {
 	}
 
 	ctx.strokeRect(0, 0, WIDTH, HEIGHT);
-	regions.forEach(function(r) {
+	regions.forEach(function(r, i) {
 		ctx.strokeRect(r.x, r.y, r.w, r.h);
+		if (currentValues) {
+			ctx.fillText(currentValues[i].toFixed(2), r.x + 5, r.y + 15);
+		}
 	});
 	if (activeRect) {
 		ctx.strokeRect(activeRect.x, activeRect.y, activeRect.w, activeRect.h);
@@ -80,7 +94,11 @@ function getConfig () {
 		draw();
 	});
 	$.get('/get_last_pic', function(report) {
+		currentValues = report.values;
 		setCurrentImage(report.picture);
+	});
+	$.get('/get_data', function(data) {
+		data.reverse().forEach(addReport);
 	});
 }
 
@@ -90,6 +108,7 @@ function setCurrentImage (pic) {
 		draw();
 	};
 	currentImage.src = "data:image/png;base64,"+pic;
+	// currentImage.src = "data:image/jpeg;base64,"+pic;
 }
 
 getConfig();
@@ -98,8 +117,20 @@ var socket = io.connect('http://localhost:3333');
 socket.on('report', function (report) {
 	console.log('got report', report);
 	if (report.picture) {
+		currentValues = report.values;
 		setCurrentImage(report.picture);
+		addReport(report);
 	}
 });
+
+function addReport (report) {
+	var values = report.values.map(function(v) {
+		return v.toFixed(2);
+	});
+	$('<div class="report-item">'+
+		'<span class="report-date">'+new Date(report.date).toLocaleString()+'</span>'+
+		'<span class="report-value">'+values+'</span>'+
+	'</div>').prependTo('#history-data');
+}
 
 })();
