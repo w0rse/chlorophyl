@@ -107,8 +107,8 @@ function setCurrentImage (pic) {
 	currentImage.onload = function() {
 		draw();
 	};
-	currentImage.src = "data:image/png;base64,"+pic;
-	// currentImage.src = "data:image/jpeg;base64,"+pic;
+	// currentImage.src = "data:image/png;base64,"+pic;
+	currentImage.src = "data:image/jpeg;base64,"+pic;
 }
 
 getConfig();

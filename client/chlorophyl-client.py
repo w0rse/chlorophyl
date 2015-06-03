@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw, ImageStat
 import urllib, urllib2, json, base64, cStringIO, os, sys, time
-#import SendKeys
+import SendKeys
 
 config = json.loads(open('config.json', 'r').read())
 WIDTH = 640
@@ -9,7 +9,7 @@ HEIGHT = 480
 state = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
 print state
 
-#SendKeys.SendKeys('^l')
+SendKeys.SendKeys('^l')
 time.sleep(10)
 
 max_mtime = 0
@@ -40,13 +40,13 @@ for r in state['regions']:
 	], fill=255)
 
 	data = ImageStat.Stat(im, mask).mean
-	result.append( (data[0] + data[1] + data[2]) / 3 )
+	result.append( data[0] )
 
 im = im.resize((WIDTH, HEIGHT))
 
 jpeg_image_buffer = cStringIO.StringIO()
-im.save(jpeg_image_buffer, format="PNG")
-#im.save(jpeg_image_buffer, format="JPEG")
+#im.save(jpeg_image_buffer, format="PNG")
+im.save(jpeg_image_buffer, format="JPEG")
 image_string = base64.b64encode(jpeg_image_buffer.getvalue())
 
 print result
