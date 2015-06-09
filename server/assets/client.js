@@ -113,7 +113,7 @@ function setCurrentImage (pic) {
 
 getConfig();
 
-var socket = io.connect('http://localhost:3333');
+var socket = io();
 socket.on('report', function (report) {
 	console.log('got report', report);
 	if (report.picture) {
