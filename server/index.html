@@ -4,6 +4,7 @@
 	<title>Chlorophyl server</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="/assets/style.css">
+	<link id="favicon" rel="shortcut icon" type="image/x-icon" href="/assets/favicon.png" />
 <body>
 	<header>
 		<a href="#settings">Settings</a>
@@ -14,7 +15,9 @@
 		<canvas id="canvas" width="640" height="480"></canvas>
 	</article>
 
-	<article id="history-data" style="display:none;"></article>
+	<article id="history-data" style="display:none;">
+		<table></table>
+	</article>
 	
 
 	<script src="/socket.io/socket.io.js"></script>

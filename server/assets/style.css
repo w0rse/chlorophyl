@@ -28,16 +28,17 @@ article {
 	width: 100%;
 	max-width: 640px;
 	margin: 30px auto 0;
+	box-sizing: border-box;
 }
 
 #history-data {
 	border: 1px solid #fff;
 	font-size: 12px;
 }
-#history-data span {
-	display: inline-block;
-	padding: 5px;
+#history-data table {
+	width: 100%;
+	border-collapse: collapse;
 }
-#history-data .report-date {
-	width: 200px;
+#history-data td {
+	padding: 5px;
 }

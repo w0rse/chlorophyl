@@ -127,10 +127,10 @@ function addReport (report) {
 	var values = report.values.map(function(v) {
 		return v.toFixed(2);
 	});
-	$('<div class="report-item">'+
-		'<span class="report-date">'+new Date(report.date).toLocaleString()+'</span>'+
-		'<span class="report-value">'+values+'</span>'+
-	'</div>').prependTo('#history-data');
+	$('<tr class="report-item">'+
+		'<td class="report-date">'+new Date(report.date).toLocaleString()+'</td>'+
+		'<td class="report-value">'+values.join(', ')+'</td>'+
+	'</tr>').prependTo('#history-data table');
 }
 
 })();
