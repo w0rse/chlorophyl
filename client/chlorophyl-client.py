@@ -1,15 +1,19 @@
 from PIL import Image, ImageDraw, ImageStat
-import urllib, urllib2, json, base64, cStringIO, os, sys, time
+import urllib, urllib2, json, base64, cStringIO, os, sys, time, subprocess
 import SendKeys
 
 config = json.loads(open('config.json', 'r').read())
 WIDTH = 640
 HEIGHT = 480
 
+subprocess.call(['c:/windows/system32/rasphone.exe', '-d', 'MTS-Internet'])
+
+time.sleep(10)
+
 state = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
 print state
 
-SendKeys.SendKeys('^l')
+SendKeys.SendKeys('F2')
 time.sleep(10)
 
 max_mtime = 0
@@ -57,3 +61,6 @@ post_data = {
 }
 
 urllib2.urlopen(config['server_url']+'/add_report', urllib.urlencode(post_data)).read()
+
+# go back to sleep
+# subprocess.call(['rundll32.exe', 'powrprof.dll,SetSuspendState'])
