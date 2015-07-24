@@ -13,13 +13,13 @@ ctx.strokeStyle = 'white';
 ctx.fillStyle = 'white';
 ctx.font = '14px Arial, sans-serif';
 
-$('#canvas').on('mousedown', function(e) {
+$('#canvas').on('mousedown touchstart', function(e) {
 	drawing = true;
 	activeRect = {
 		x: e.offsetX,
 		y: e.offsetY
 	};
-}).on('mouseup', function(e) {
+}).on('mouseup touchend', function(e) {
 	drawing = false;
 
 	if (activeRect.w < 0) {
@@ -40,7 +40,7 @@ $('#canvas').on('mousedown', function(e) {
 	activeRect = null;
 	draw();
 	saveRegions();
-}).on('mousemove', function(e) {
+}).on('mousemove touchmove', function(e) {
 	if (drawing) {
 		activeRect.w = e.offsetX - activeRect.x;
 		activeRect.h = e.offsetY - activeRect.y;
