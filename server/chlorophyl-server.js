@@ -37,7 +37,7 @@ app.get('/get_config', function (req, res) {
 	res.send(config);
 });
 app.get('/get_data', function (req, res) {
-	models.Report.find({}, 'date values').sort('-date').exec(function(err, doc) {
+	models.Report.find({}, 'date values').sort('-date').limit(100).exec(function(err, doc) {
 		res.send(doc);
 	});
 });
