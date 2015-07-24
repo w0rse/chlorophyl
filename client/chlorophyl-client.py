@@ -8,7 +8,7 @@ HEIGHT = 480
 HOW_MANY = 3
 
 def removeCamera():
-	process = subprocess.Popen(['C:\devcon\i386\devcon.exe', 'find', 'USB\VID*'], stdout=subprocess.PIPE)
+	process = subprocess.Popen(['C:\devcon\i386\devcon.exe', 'find', 'USB\VID*'], stdout=subprocess.PIPE, shell=True)
 	out, err = process.communicate()
 	result = out.split('\n')
 	for line in result:
@@ -16,7 +16,7 @@ def removeCamera():
 			print line
 			parts = line.split('\\')
 			device_id = parts[0] + '\\' + parts[1]
-			subprocess.Popen(['C:\devcon\i386\devcon.exe', 'remove', device_id])
+			subprocess.Popen(['C:\devcon\i386\devcon.exe', 'remove', device_id], shell=True)
 
 removeCamera()
 # close DigiCamControl
@@ -25,13 +25,13 @@ subprocess.Popen(['taskkill', '/f', '/im', 'CameraControl.exe'])
 time.sleep(15)
 
 # find any new cameras
-subprocess.Popen(['C:\devcon\i386\devcon.exe', 'rescan'])
+subprocess.Popen(['C:\devcon\i386\devcon.exe', 'rescan'], shell=True)
 # now = datetime.datetime.now()
 # if now.minute < 5 or now.minute > 15:
 # 	SendKeys.SendKeys('^l')
 # 	sys.exit(0)
 
-subprocess.Popen(['C:\Program Files\digiCamControl\CameraControl.exe'])
+subprocess.Popen(['C:\Program Files (x86)\digiCamControl\CameraControl.exe'])
 
 time.sleep(15)
 
