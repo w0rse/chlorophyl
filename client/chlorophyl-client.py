@@ -1,22 +1,40 @@
+# -*- coding: utf-8 -*-
 from PIL import Image, ImageDraw, ImageStat
 import urllib, urllib2, json, base64, cStringIO, os, sys, time, subprocess, datetime
 import SendKeys
+import win32gui
+
+time.sleep(60)
 
 config = json.loads(open('config.json', 'r').read())
 WIDTH = 640
 HEIGHT = 480
-HOW_MANY = 3
+HOW_MANY = 1
 
 def removeCamera():
-	process = subprocess.Popen(['C:\devcon\i386\devcon.exe', 'find', 'USB\VID*'], stdout=subprocess.PIPE, shell=True)
+	process = subprocess.Popen(['C:\devcon\devcon.exe', 'find', 'USB\VID*'], stdout=subprocess.PIPE, shell=True)
 	out, err = process.communicate()
 	result = out.split('\n')
 	for line in result:
 		if 'AW120' in line:
 			print line
 			parts = line.split('\\')
-			device_id = parts[0] + '\\' + parts[1]
-			subprocess.Popen(['C:\devcon\i386\devcon.exe', 'remove', device_id], shell=True)
+			device_id = (parts[0] + '\\' + parts[1]).replace('&', '^&')
+			subprocess.Popen(['C:\devcon\devcon.exe', 'remove', device_id], shell=True)
+
+def setForeground(title=''):
+	toplist = []
+	winlist = []
+	def enum_callback(hwnd, results):
+		winlist.append((hwnd, win32gui.GetWindowText(hwnd)))
+	win32gui.EnumWindows(enum_callback, toplist)
+	wnd = None
+	for l in winlist:
+		if title in l[1]:
+			wnd = l
+	# use the window handle to set focus
+	if wnd:
+		win32gui.SetForegroundWindow(wnd[0])
 
 removeCamera()
 # close DigiCamControl
@@ -24,16 +42,16 @@ subprocess.Popen(['taskkill', '/f', '/im', 'CameraControl.exe'])
 
 time.sleep(15)
 
+subprocess.Popen(['C:\Program Files (x86)\digiCamControl\CameraControl.exe'])
+
 # find any new cameras
-subprocess.Popen(['C:\devcon\i386\devcon.exe', 'rescan'], shell=True)
+subprocess.Popen(['C:\devcon\devcon.exe', 'rescan'], shell=True)
 # now = datetime.datetime.now()
 # if now.minute < 5 or now.minute > 15:
 # 	SendKeys.SendKeys('^l')
 # 	sys.exit(0)
 
-subprocess.Popen(['C:\Program Files (x86)\digiCamControl\CameraControl.exe'])
-
-time.sleep(15)
+time.sleep(180)
 
 subprocess.Popen(['c:/windows/system32/rasphone.exe', '-d', 'MTS-Internet'])
 
@@ -97,12 +115,15 @@ post_data = {
 	'image_data': [0] * len(state['regions'])
 }
 
+# we want a window with cursor for our hitkey to work
+setForeground('Sublime')
+
 for i in range(0, HOW_MANY):
 	image_data = getImageData()
 	post_data['image_string'] = image_data['image_string']
 	post_data['image_data'] = [post_data['image_data'][j] + image_data['image_data'][j] for j in range(len(state['regions']))]
 
-post_data['image_data'] = [x / 3 for x in post_data['image_data']]
+post_data['image_data'] = [x / HOW_MANY for x in post_data['image_data']]
 
 urllib2.urlopen(config['server_url']+'/add_report', urllib.urlencode(post_data)).read()
 
