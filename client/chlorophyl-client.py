@@ -79,6 +79,10 @@ post_data['image_data'] = [x / HOW_MANY for x in post_data['image_data']]
 post_data['deviceId'] = deviceId
 
 urllib2.urlopen(config['local_server_url']+'/add_report', urllib.urlencode(post_data)).read()
+
+with open(config['local_file'], 'a') as f:
+	f.write(json.dumps(post_data['image_data']) + '\n')
+
 try:
 	urllib2.urlopen(config['remote_server_url']+'/add_report', urllib.urlencode(post_data), timeout=5).read()
 except:

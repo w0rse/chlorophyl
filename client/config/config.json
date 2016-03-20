@@ -1,4 +1,5 @@
 {
 	"remote_server_url": "http://chlorophyll.pw",
-	"local_server_url": "http://localhost:3333"
+	"local_server_url": "http://localhost:3333",
+	"local_file": "data.txt"
 }

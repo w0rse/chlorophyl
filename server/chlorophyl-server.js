@@ -65,7 +65,7 @@ app.post('/add_report', function (req, res) {
 		lat: JSON.parse(req.body.lat.replace('/', ',')),
 		long: JSON.parse(req.body.long.replace('/', ',')),
 	} : {};
-	report.deviceId = parseInt(req.body.deviceId) || '';
+	report.deviceId = req.body.deviceId || '';
 	if (req.body.date) {
 		report.date = new Date(req.body.date);
 	}
