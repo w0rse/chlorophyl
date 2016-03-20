@@ -4,7 +4,7 @@ WIDTH = 640
 HEIGHT = 480
 
 def shoot():
-	subprocess.call(['C:\Program Files (x86)\digiCamControl\CameraControlCmd.exe', '/capture', '/folder C:\chlorophyll\pictures'])
+	subprocess.call(['C:\Program Files\digiCamControl\CameraControlCmd.exe', '/capture', '/folder', 'c:\chlorophyll\pictures'])
 	time.sleep(5)
 	
 def getCoordinate(im, x, y):

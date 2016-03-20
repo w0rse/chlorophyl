@@ -1,3 +1,4 @@
 {
-	"server_url": "http://chlorophyll.pw"
+	"remote_server_url": "http://chlorophyll.pw",
+	"local_server_url": "http://localhost:3333"
 }

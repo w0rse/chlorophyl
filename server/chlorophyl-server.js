@@ -61,10 +61,10 @@ app.post('/add_report', function (req, res) {
 	report = new models.Report();
 	report.values = JSON.parse(req.body.image_data);
 	report.picture = req.body.image_string || '';
-	report.metrics = {
+	report.metrics = req.body.lat ? {
 		lat: JSON.parse(req.body.lat.replace('/', ',')),
 		long: JSON.parse(req.body.long.replace('/', ',')),
-	};
+	} : {};
 	report.deviceId = parseInt(req.body.deviceId) || '';
 	if (req.body.date) {
 		report.date = new Date(req.body.date);
