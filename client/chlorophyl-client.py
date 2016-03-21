@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from PIL import Image, ImageDraw, ImageStat
 import urllib, urllib2, json, base64, cStringIO, os, sys, time, subprocess, datetime, exifread
+import clib
 
 config = json.loads(open('config/config-local.json', 'r').read())
 WIDTH = 640
@@ -18,15 +19,9 @@ devices = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
 state = devices[int(sys.argv[1])]
 print state
 
-def getCoordinate(im, x, y):
-	x = int(x * im.size[0] / WIDTH)
-	y = int(y * im.size[1] / HEIGHT)
-	return (x, y)
-
 def getImageData():
 
-	subprocess.call(['C:\Program Files (x86)\digiCamControl\CameraControlCmd.exe', '/capture', '/folder C:\chlorophyll\pictures'])
-	time.sleep(5)
+	clib.shoot()
 
 	max_mtime = 0
 	for dirname, subdirs, files in os.walk("../pictures"):
@@ -47,8 +42,8 @@ def getImageData():
 		channel = CHANNELS[ r['channel'] ]
 		r = {'x': int(r['x']), 'y': int(r['y']), 'w': int(r['w']), 'h': int(r['h'])}
 		draw.rectangle([
-			getCoordinate(im, r['x'], r['y']), 
-			getCoordinate(im, r['x']+r['w'], r['y']+r['h'])
+			clib.getCoordinate(im, r['x'], r['y']), 
+			clib.getCoordinate(im, r['x']+r['w'], r['y']+r['h'])
 		], fill=255)
 
 		data = ImageStat.Stat(im, mask).mean

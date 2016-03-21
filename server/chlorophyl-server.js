@@ -54,8 +54,14 @@ app.post('/add_report', function (req, res) {
 	report = new models.Report();
 	report.values = JSON.parse(req.body.image_data);
 	report.picture = req.body.image_string || '';
-	report.metrics = {};
-	report.deviceId = parseInt(req.body.deviceId) || 0;
+	report.metrics = {
+		lat: JSON.parse(req.body.lat.replace('/', ',')),
+		long: JSON.parse(req.body.long.replace('/', ',')),
+	};
+	report.deviceId = parseInt(req.body.deviceId) || '';
+	if (req.body.date) {
+		report.date = new Date(req.body.date);
+	}
 	report.save();
 	io.sockets.emit('report', report);
 	res.send('ok');
@@ -66,7 +72,6 @@ app.post('/save_regions', function (req, res) {
 		if (err) {
 			res.send(error);
 		} else {
-			console.log(config);
 			res.send('ok');
 		}
 	});
