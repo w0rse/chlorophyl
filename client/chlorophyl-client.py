@@ -1,39 +1,21 @@
+
 # -*- coding: utf-8 -*-
 from PIL import Image, ImageDraw, ImageStat
-import urllib, urllib2, json, base64, cStringIO, os, sys, time, subprocess, datetime
-import SendKeys
-import win32gui, traceback
+import urllib, urllib2, json, base64, cStringIO, os, sys, time, subprocess, datetime, exifread
 
-time.sleep(30)
-
-config = json.loads(open('config.json', 'r').read())
+config = json.loads(open('config/config-local.json', 'r').read())
 WIDTH = 640
 HEIGHT = 480
 HOW_MANY = 1
-
-def removeCamera():
-	process = subprocess.Popen(['C:\devcon\devcon.exe', 'find', 'USB\VID*'], stdout=subprocess.PIPE, shell=True)
-	out, err = process.communicate()
-	result = out.split('\n')
-	for line in result:
-		if 'AW120' in line:
-			print line
-			parts = line.split('\\')
-			device_id = (parts[0] + '\\' + parts[1]).replace('&', '^&')
-			subprocess.Popen(['C:\devcon\devcon.exe', 'remove', device_id], shell=True)
-
-removeCamera()
-
-time.sleep(10)
+CHANNELS = {'r': 0, 'g': 1, 'b': 2}
 
 # find any new cameras
-subprocess.Popen(['C:\devcon\devcon.exe', 'rescan'], shell=True)
+# subprocess.Popen(['C:\devcon\devcon.exe', 'rescan'], shell=True)
 
-#subprocess.Popen(['c:/windows/system32/rasphone.exe', '-d', 'MTS-Internet'])
+# time.sleep(20)
 
-time.sleep(20)
-
-state = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
+devices = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
+state = devices[int(sys.argv[1])]
 print state
 
 def getCoordinate(im, x, y):
@@ -43,7 +25,7 @@ def getCoordinate(im, x, y):
 
 def getImageData():
 
-	subprocess.call(['C:\Program Files (x86)\digiCamControl\CameraControlCmd.exe', '/capture'])
+	subprocess.call(['C:\Program Files (x86)\digiCamControl\CameraControlCmd.exe', '/capture', '/folder C:\chlorophyll\pictures'])
 	time.sleep(5)
 
 	max_mtime = 0
@@ -62,6 +44,7 @@ def getImageData():
 	for r in state['regions']:
 		mask = Image.new('1', im.size)
 		draw = ImageDraw.Draw(mask)
+		channel = CHANNELS[ r['channel'] ]
 		r = {'x': int(r['x']), 'y': int(r['y']), 'w': int(r['w']), 'h': int(r['h'])}
 		draw.rectangle([
 			getCoordinate(im, r['x'], r['y']), 
@@ -69,8 +52,8 @@ def getImageData():
 		], fill=255)
 
 		data = ImageStat.Stat(im, mask).mean
-		# take only red channel
-		result.append( data[0] )
+		# select channel
+		result.append( data[channel] )
 
 	im = im.resize((WIDTH, HEIGHT))
 
@@ -99,11 +82,3 @@ for i in range(0, HOW_MANY):
 post_data['image_data'] = [x / HOW_MANY for x in post_data['image_data']]
 
 urllib2.urlopen(config['server_url']+'/add_report', urllib.urlencode(post_data)).read()
-
-removeCamera()
-
-# Disconnect from internet
-#subprocess.call(['c:/windows/system32/rasphone.exe', '-h', 'MTS-Internet'])
-#subprocess.call(['c:/windows/system32/rasphone.exe', '-h', 'MTS-Internet'])
-
-subprocess.call(['shutdown', '/r'])

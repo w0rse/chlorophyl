@@ -1,1 +1,1 @@
-SendKeys==0.3
+exifread
