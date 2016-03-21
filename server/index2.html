@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chlorophyll</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link id="favicon" rel="shortcut icon" type="image/x-icon" href="/assets/favicon.png" />
+	<link rel="stylesheet" href="/assets/style.css">
+	<link rel="stylesheet" href="/assets/jquery-ui.css">
+<body>
+	<header>
+		<a href="#settings">Settings</a>
+		<a href="#history-data">Data</a>
+		<select name="device-select"></select>
+	</header>
+
+	<article id="settings">
+		<div id="regions"></div>
+		<img id="preview" src="" width="640" height="480" />
+		<div class="controls">
+			<button id="add-region-button">Add region</button>
+			Channel:
+			<select name="region-channel" disabled="true">
+				<option value="">None</option>
+				<option value="r">Red</option>
+				<option value="g">Green</option>
+				<option value="b">Blue</option>
+			</select>
+		</div>
+	</article>
+
+	<article id="history-data" style="display:none;">
+		<table></table>
+	</article>
+	
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/assets/jquery-1.10.1.min.js"></script>
+	<script src="/assets/jquery-ui.js"></script>
+	<script src="/assets/client2.js"></script>
+</body>

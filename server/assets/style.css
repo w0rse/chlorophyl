@@ -1,0 +1,74 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	background: #3F51B5;
+	font-family: Arial, sans-serif;
+	color: #fff;
+}
+a {
+	color: #fff;
+	text-decoration: none;
+}
+header {
+	font-size: 1.7em;
+	background: #3949AB;
+	height: 53px;
+}
+header a {
+	display: inline-block;
+	padding: 10px 20px;
+	transition: all 0.5s;
+	float: left;
+}
+header a:hover {
+	background: #303F9F;
+}
+
+select[name="device-select"] {
+	vertical-align: sub;
+}
+
+article {
+	width: 100%;
+	max-width: 640px;
+	margin: 30px auto 0;
+	box-sizing: border-box;
+	position: relative;
+}
+
+#regions {
+	position: absolute;
+	width: 640px;
+	height: 480px;
+}
+
+.region {
+	position: absolute !important;
+	border: 1px solid #fff;
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.region.active {
+	border-width: 2px;
+}
+.region.r {
+	border-color: #e00;
+}
+.region.g {
+	border-color: #0e0;
+}
+.region.b {
+	border-color: #00e;
+}
+
+#history-data {
+	border: 1px solid #fff;
+	font-size: 12px;
+}
+#history-data table {
+	width: 100%;
+	border-collapse: collapse;
+}
+#history-data td {
+	padding: 5px;
+}

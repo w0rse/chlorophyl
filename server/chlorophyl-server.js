@@ -14,27 +14,29 @@ mongoose.connect('mongodb://localhost/chlorophyl');
 var db = mongoose.connection;
 db.once('open', function (callback) {
 	server.listen(3333);
-	models.Config.findOne(function(err, doc) {
-		if (!doc) {
-			config = new models.Config();
-			config.regions = [];
-			config.interval = 5;
-			config.save();
-		} else {
-			config = doc;
-		}
-	});
 });
 
 app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/index.html');
+	res.sendFile(__dirname + '/index2.html');
 });
 app.get('/assets/:file', function (req, res) {
 	res.sendFile(__dirname + '/assets/' + req.params.file);
 });
 
 app.get('/get_config', function (req, res) {
-	res.send(config);
+	models.Config.find(function(err, docs) {
+		if (!docs.length) {
+			var c = new models.Config();
+			c.deviceId = 0;
+			c.deviceName = 'Untitled';
+			c.regions = [];
+			c.save();
+			config = [c];
+		} else {
+			config = docs;
+		}
+		res.send(config);
+	});
 });
 app.get('/get_data', function (req, res) {
 	models.Report.find({}, 'date values').sort('-date').limit(100).exec(function(err, doc) {
@@ -53,14 +55,19 @@ app.post('/add_report', function (req, res) {
 	report.values = JSON.parse(req.body.image_data);
 	report.picture = req.body.image_string || '';
 	report.metrics = {};
+	report.deviceId = parseInt(req.body.deviceId) || 0;
 	report.save();
 	io.sockets.emit('report', report);
 	res.send('ok');
 });
 
 app.post('/save_regions', function (req, res) {
-	config.regions = req.body.regions;
-	config.modified = new Date();
-	config.save();
-	res.send('ok');
+	models.Config.findByIdAndUpdate(req.body.id, { $set: { regions: req.body.regions }}, function (err, config) {
+		if (err) {
+			res.send(error);
+		} else {
+			console.log(config);
+			res.send('ok');
+		}
+	});
 });

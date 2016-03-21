@@ -6,14 +6,15 @@ var reportSchema = new Schema({
 	values: [Number],
 	metrics: {},
 	picture: String,
+	deviceId: String,
 });
 reportSchema.index({date: -1});
 
 var configSchema = new Schema({
 	modified: { type: Date, default: Date.now, index: true },
-	regions: [{x: Number, y:Number, w:Number, h:Number}],
-	interval: Number,
+	regions: [{x: Number, y:Number, w:Number, h:Number, id:Number, channel: String}],
 	getPicture: Boolean,
+	deviceName: String,
 });
 
 module.exports = {
