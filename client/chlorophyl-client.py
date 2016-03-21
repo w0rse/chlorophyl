@@ -17,6 +17,7 @@ CHANNELS = {'r': 0, 'g': 1, 'b': 2}
 
 devices = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
 state = devices[int(sys.argv[1])]
+deviceId = state._id
 print state
 
 def getImageData():
@@ -75,5 +76,6 @@ for i in range(0, HOW_MANY):
 	post_data['image_data'] = [post_data['image_data'][j] + image_data['image_data'][j] for j in range(len(state['regions']))]
 
 post_data['image_data'] = [x / HOW_MANY for x in post_data['image_data']]
+post_data['deviceId'] = deviceId
 
 urllib2.urlopen(config['server_url']+'/add_report', urllib.urlencode(post_data)).read()

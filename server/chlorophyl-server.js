@@ -38,13 +38,20 @@ app.get('/get_config', function (req, res) {
 		res.send(config);
 	});
 });
+app.post('/add_device', function (req, res) {
+	var c = new models.Config();
+	c.deviceName = req.body.name || '';
+	c.regions = [];
+	c.save();
+	res.send(c._id);
+});
 app.get('/get_data', function (req, res) {
-	models.Report.find({}, 'date values').sort('-date').limit(100).exec(function(err, doc) {
+	models.Report.find({deviceId: req.query.id}, 'date values').sort('-date').limit(100).exec(function(err, doc) {
 		res.send(doc);
 	});
 });
 app.get('/get_last_pic', function (req, res) {
-	models.Report.findOne({'picture': {'$ne': ''}}).sort('-date').exec(function(err, doc) {
+	models.Report.findOne({'picture': {'$ne': ''}, deviceId: req.query.id}).sort('-date').exec(function(err, doc) {
 		res.send(doc);
 	});
 });

@@ -11,6 +11,7 @@ CHANNELS = {'r': 0, 'g': 1, 'b': 2}
 
 devices = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
 state = devices[int(sys.argv[1])]
+deviceId = state._id
 print state
 
 folder = sys.argv[2]
@@ -64,6 +65,7 @@ for file in pics:
 		'date': exif_date,
 		'lat': str(exif_lat),
 		'long': str(exif_long),
+		'deviceId': deviceId,
 	}
 
 	urllib2.urlopen(config['server_url']+'/add_report', urllib.urlencode(post_data)).read()
