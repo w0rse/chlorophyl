@@ -2,3 +2,4 @@ node_modules
 pictures
 *.pyc
 client/exifread
+client/data.txt

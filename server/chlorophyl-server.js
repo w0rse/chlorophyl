@@ -27,7 +27,6 @@ app.get('/get_config', function (req, res) {
 	models.Config.find(function(err, docs) {
 		if (!docs.length) {
 			var c = new models.Config();
-			c.deviceId = 0;
 			c.deviceName = 'Untitled';
 			c.regions = [];
 			c.save();
@@ -57,21 +56,23 @@ app.get('/get_last_pic', function (req, res) {
 });
 
 app.post('/add_report', function (req, res) {
-	console.log(req.body.image_data);
-	report = new models.Report();
-	report.values = JSON.parse(req.body.image_data);
-	report.picture = req.body.image_string || '';
-	report.metrics = req.body.lat ? {
-		lat: JSON.parse(req.body.lat.replace('/', ',')),
-		long: JSON.parse(req.body.long.replace('/', ',')),
-	} : {};
-	report.deviceId = req.body.deviceId || '';
-	if (req.body.date) {
-		report.date = new Date(req.body.date);
-	}
-	report.save();
-	io.sockets.emit('report', report);
-	res.send('ok');
+	var deviceId = req.body.deviceId || '';
+	models.Config.findOne({_id: deviceId}, function(err, doc) {
+		var report = new models.Report();
+		report.values = JSON.parse(req.body.image_data);
+		report.picture = req.body.image_string || '';
+		report.metrics = req.body.lat ? {
+			lat: JSON.parse(req.body.lat.replace('/', ',')),
+			long: JSON.parse(req.body.long.replace('/', ',')),
+		} : {};
+		report.deviceId = doc ? deviceId : config[0]._id;
+		if (req.body.date) {
+			report.date = new Date(req.body.date);
+		}
+		report.save();
+		io.sockets.emit('report', report);
+		res.send('ok');
+	});
 });
 
 app.post('/save_regions', function (req, res) {

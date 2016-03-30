@@ -4,14 +4,14 @@ from PIL import Image, ImageDraw, ImageStat
 import urllib, urllib2, json, base64, cStringIO, os, sys, time, subprocess, datetime, exifread
 import clib
 
-config = json.loads(open('config/config-local.json', 'r').read())
+config = json.loads(open('config/config.json', 'r').read())
 WIDTH = 640
 HEIGHT = 480
 CHANNELS = {'r': 0, 'g': 1, 'b': 2}
 
-devices = json.loads(urllib2.urlopen(config['server_url']+'/get_config').read())
+devices = json.loads(urllib2.urlopen(config['local_server_url']+'/get_config').read())
 state = devices[int(sys.argv[1])]
-deviceId = state._id
+deviceId = state['_id']
 print state
 
 folder = sys.argv[2]
@@ -68,4 +68,4 @@ for file in pics:
 		'deviceId': deviceId,
 	}
 
-	urllib2.urlopen(config['server_url']+'/add_report', urllib.urlencode(post_data)).read()
+	urllib2.urlopen(config['local_server_url']+'/add_report', urllib.urlencode(post_data)).read()
