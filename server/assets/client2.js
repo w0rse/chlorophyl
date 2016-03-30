@@ -22,13 +22,17 @@ function getConfig () {
 	$.get('/get_config', function(data) {
 		config = data;
 		initDevices();
-		selectDevice();
+		selectDevice(currentDevice);
 	});
+}
+
+function getDeviceData() {
 	$.get('/get_last_pic?id='+currentDevice, function(report) {
 		currentValues = report.values;
 		setCurrentImage(report.picture);
 	});
 	$.get('/get_data?id='+currentDevice, function(data) {
+		$dataTable.empty();
 		data.reverse().forEach(addReport);
 	});
 }
@@ -48,8 +52,12 @@ function initDevices () {
 	});
 }
 
-function selectDevice () {
-	var id = $deviceSelect.val();
+function selectDevice (id) {
+	if (id) {
+		$deviceSelect.val(id);
+	} else {
+		id = $deviceSelect.val();
+	}
 	currentDevice = id;
 	localStorage.setItem('currentDevice', id);
 
@@ -57,6 +65,8 @@ function selectDevice () {
 
 	var deviceConfig = config.find(function(e) { return e._id === id; });
 	deviceConfig.regions.forEach(addRegion);
+
+	getDeviceData();
 }
 
 function addReport (report) {
@@ -140,7 +150,7 @@ function saveConfig () {
 
 $('#add-region-button').click(addRegion.bind(null, null));
 $channelSelect.on('change', selectChannel);
-$deviceSelect.on('change', selectDevice);
+$deviceSelect.on('change', selectDevice.bind(null, null));
 
 $regionsContainer.on('click', '.region', function(e) {
 	var $target = $(e.currentTarget);
