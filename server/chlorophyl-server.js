@@ -45,7 +45,7 @@ app.post('/add_device', function (req, res) {
 	res.send(c._id);
 });
 app.get('/get_data', function (req, res) {
-	models.Report.find({deviceId: req.query.id}, 'date values').sort('-date').limit(100).exec(function(err, doc) {
+	models.Report.find({deviceId: req.query.id}, 'date values metrics').sort('-date').limit(100).exec(function(err, doc) {
 		res.send(doc);
 	});
 });

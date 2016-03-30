@@ -31,7 +31,9 @@ for file in pics:
 		datetime.datetime.strptime(str(tags['EXIF DateTimeOriginal']), '%Y:%m:%d %H:%M:%S'), 
 	'%Y-%m-%d %H:%M:%S')
 	exif_lat = tags['GPS GPSLatitude'] if 'GPS GPSLatitude' in tags else ''
+	exif_lat_ref = tags['GPS GPSLatitude'] if 'GPS GPSLatitudeRef' in tags else ''
 	exif_long = tags['GPS GPSLongitude'] if 'GPS GPSLongitude' in tags else ''
+	exif_long_ref = tags['GPS GPSLongitude'] if 'GPS GPSLongitudeRef' in tags else ''
 
 	im = Image.open(file)
 	result = []
