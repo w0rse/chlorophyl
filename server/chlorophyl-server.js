@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({'extended': true, 'limit': '10mb'}));
 mongoose.connect('mongodb://localhost/chlorophyl');
 var db = mongoose.connection;
 db.once('open', function (callback) {
+	console.log('Chlorophyll server listening on port 3333');
 	server.listen(3333);
 });
 
@@ -62,8 +63,8 @@ app.post('/add_report', function (req, res) {
 		report.values = JSON.parse(req.body.image_data);
 		report.picture = req.body.image_string || '';
 		report.metrics = req.body.lat ? {
-			lat: JSON.parse(req.body.lat.replace('/', ',')),
-			long: JSON.parse(req.body.long.replace('/', ',')),
+			lat: req.body.lat,
+			lon: req.body.lon,
 		} : {};
 		report.deviceId = doc ? deviceId : config[0]._id;
 		if (req.body.date) {

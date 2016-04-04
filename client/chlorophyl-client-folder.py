@@ -22,18 +22,26 @@ for dirname, subdirs, files in os.walk(folder):
 		pics.append(os.path.join(dirname, fname))
 
 for file in pics:
+	if 'DS_Store' in file:
+		continue
+
 	print 'reading '+file
 
 	f = open(file, 'rb')
 	tags = exifread.process_file(f)
 	f.close()
+
 	exif_date = datetime.datetime.strftime(
 		datetime.datetime.strptime(str(tags['EXIF DateTimeOriginal']), '%Y:%m:%d %H:%M:%S'), 
-	'%Y-%m-%d %H:%M:%S')
+		'%Y-%m-%d %H:%M:%S'
+	) if 'EXIF DateTimeOriginal' in tags else datetime.datetime.now()
+
 	exif_lat = tags['GPS GPSLatitude'] if 'GPS GPSLatitude' in tags else ''
-	exif_lat_ref = tags['GPS GPSLatitude'] if 'GPS GPSLatitudeRef' in tags else ''
-	exif_long = tags['GPS GPSLongitude'] if 'GPS GPSLongitude' in tags else ''
-	exif_long_ref = tags['GPS GPSLongitude'] if 'GPS GPSLongitudeRef' in tags else ''
+	exif_lat_ref = tags['GPS GPSLatitudeRef'] if 'GPS GPSLatitudeRef' in tags else ''
+	exif_lon = tags['GPS GPSLongitude'] if 'GPS GPSLongitude' in tags else ''
+	exif_lon_ref = tags['GPS GPSLongitudeRef'] if 'GPS GPSLongitudeRef' in tags else ''
+
+	lat, lon = clib.getLatLon(exif_lat, exif_lat_ref, exif_lon, exif_lon_ref)
 
 	im = Image.open(file)
 	result = []
@@ -65,8 +73,8 @@ for file in pics:
 		'image_data': result,
 		'image_string': image_string,
 		'date': exif_date,
-		'lat': str(exif_lat),
-		'long': str(exif_long),
+		'lat': str(lat),
+		'lon': str(lon),
 		'deviceId': deviceId,
 	}
 

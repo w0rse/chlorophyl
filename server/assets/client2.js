@@ -73,18 +73,13 @@ function addReport (report) {
 	var values = report.values.map(function(v) {
 		return v.toFixed(2);
 	});
-	if (report.metrics) {
-		coords = {
-			lat: report.metrics.lat[0]+'.'+report.metrics.lat[1]+parseInt(report.metrics.lat[2]/report.metrics.lat[3]),
-			long: report.metrics.long[0]+'.'+report.metrics.long[1]+parseInt(report.metrics.long[2]/report.metrics.long[3]),
-		}
-	}
+
 	$('<tr class="report-item">'+
 		'<td class="report-date">'+new Date(report.date).toLocaleString()+'</td>'+
 		'<td class="report-value">'+values.join(', ')+
-		// (report.metrics ? 
-		// ' <a href="http://maps.google.com/?q=' + coords.lat + ',' + coords.long + '">map</a>' :
-		// '') + 
+		(report.metrics ? 
+		' <a href="http://maps.google.com/?q=' + report.metrics.lat + ',' + report.metrics.lon + '">map</a>' :
+		'') + 
 		'</td>'+
 	'</tr>').prependTo($dataTable);
 }
