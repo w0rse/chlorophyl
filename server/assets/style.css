@@ -48,6 +48,12 @@ article {
 	background: rgba(255, 255, 255, 0.2);
 }
 
+.region-label {
+    font-size: 12px;
+	display: inline-block;
+	margin: 5px;
+}
+
 .region.active {
 	border-width: 2px;
 }
