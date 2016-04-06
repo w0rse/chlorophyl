@@ -1,14 +1,10 @@
 
 # -*- coding: utf-8 -*-
-from PIL import Image, ImageDraw, ImageStat
 import urllib, urllib2, json, base64, cStringIO, os, sys, time, subprocess, datetime, exifread
 import clib
 
 config = json.loads(open('config/config.json', 'r').read())
-WIDTH = 640
-HEIGHT = 480
 HOW_MANY = 1
-CHANNELS = {'r': 0, 'g': 1, 'b': 2}
 
 # find any new cameras
 # subprocess.Popen(['C:\devcon\devcon.exe', 'rescan'], shell=True)
@@ -29,40 +25,21 @@ def getImageData():
 		for fname in files:
 			full_path = os.path.join(dirname, fname)
 			mtime = os.stat(full_path).st_mtime
-			if mtime > max_mtime:
+			if mtime > max_mtime and fname not in ['.DS_Store']:
 				max_mtime = mtime
 				max_file = full_path
 
 	print 'reading '+max_file
-	im = Image.open(max_file)
-	result = []
-
-	for r in state['regions']:
-		mask = Image.new('1', im.size)
-		draw = ImageDraw.Draw(mask)
-		channel = CHANNELS[ r['channel'] ]
-		r = {'x': int(r['x']), 'y': int(r['y']), 'w': int(r['w']), 'h': int(r['h'])}
-		draw.rectangle([
-			clib.getCoordinate(im, r['x'], r['y']), 
-			clib.getCoordinate(im, r['x']+r['w'], r['y']+r['h'])
-		], fill=255)
-
-		data = ImageStat.Stat(im, mask).mean
-		# select channel
-		result.append( data[channel] )
-
-	im = im.resize((WIDTH, HEIGHT))
-
-	jpeg_image_buffer = cStringIO.StringIO()
-	#im.save(jpeg_image_buffer, format="PNG")
-	im.save(jpeg_image_buffer, format="JPEG")
-	image_string = base64.b64encode(jpeg_image_buffer.getvalue())
-
-	print result
+	lat, lon, exif_date = clib.getLatLonDate(max_file)
+	image_data, image_string = clib.getRegionsData(max_file, state['regions'])
+	print image_data
 
 	return {
-		'image_data': result,
+		'image_data': image_data,
 		'image_string': image_string,
+		'date': exif_date,
+		'lat': str(lat),
+		'lon': str(lon),
 	}
 
 
@@ -73,6 +50,9 @@ post_data = {
 for i in range(0, HOW_MANY):
 	image_data = getImageData()
 	post_data['image_string'] = image_data['image_string']
+	post_data['lat'] = image_data['lat']
+	post_data['lon'] = image_data['lon']
+	post_data['date'] = image_data['date']
 	post_data['image_data'] = [post_data['image_data'][j] + image_data['image_data'][j] for j in range(len(state['regions']))]
 
 post_data['image_data'] = [x / HOW_MANY for x in post_data['image_data']]
