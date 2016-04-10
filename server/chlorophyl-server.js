@@ -10,7 +10,7 @@ var config;
 
 app.use(bodyParser.urlencoded({'extended': true, 'limit': '10mb'}));
 
-mongoose.connect('mongodb://localhost/chlorophyl');
+mongoose.connect('mongodb://127.0.0.1/chlorophyl');
 var db = mongoose.connection;
 db.once('open', function (callback) {
 	console.log('Chlorophyll server listening on port 3333');
