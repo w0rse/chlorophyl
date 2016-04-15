@@ -73,6 +73,9 @@ def getLatLonDate (file):
 	gps_longitude = tags['GPS GPSLongitude'] if 'GPS GPSLongitude' in tags else ''
 	gps_longitude_ref = tags['GPS GPSLongitudeRef'] if 'GPS GPSLongitudeRef' in tags else ''
 
+	if not gps_latitude:
+		return '', '', date
+
 	lat = _convert_to_degress(gps_latitude)
 	if gps_latitude_ref.values[0] != "N":
 		lat = 0 - lat

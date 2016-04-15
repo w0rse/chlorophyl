@@ -77,7 +77,7 @@ function addReport (report) {
 		'<td class="report-date">'+new Date(report.date).toLocaleString()+'</td>'+
 		'<td class="report-value">'+values.join(', ')+
 		(report.metrics ?
-		' <a href="http://maps.google.com/?q=' + report.metrics.lat + ',' + report.metrics.lon + '" target="_blank">map</a>' :
+		' lat: ' + report.metrics.lat + ', lon: ' + report.metrics.lon :
 		'') +
 		'</td>'+
 	'</tr>').prependTo($dataTable);
