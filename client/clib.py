@@ -76,15 +76,18 @@ def getLatLonDate (file):
 	if not gps_latitude:
 		return '', '', date
 
-	lat = _convert_to_degress(gps_latitude)
-	if gps_latitude_ref.values[0] != "N":
-		lat = 0 - lat
+	try:
+		lat = _convert_to_degress(gps_latitude)
+		if gps_latitude_ref.values[0] != "N":
+			lat = 0 - lat
 
-	lon = _convert_to_degress(gps_longitude)
-	if gps_longitude_ref.values[0] != "E":
-		lon = 0 - lon
+		lon = _convert_to_degress(gps_longitude)
+		if gps_longitude_ref.values[0] != "E":
+			lon = 0 - lon
 
-	return lat, lon, date
+		return lat, lon, date
+	except:
+		return '', '', date
 
 
 # https://gist.github.com/snakeye/fdc372dbf11370fe29eb
