@@ -1,5 +1,7 @@
 from PIL import Image, ImageDraw, ImageStat
 import urllib, urllib2, json, base64, cStringIO, os, sys, time, subprocess, datetime, exifread
+import serial
+from serial.tools import list_ports
 
 WIDTH = 640
 HEIGHT = 480
@@ -31,7 +33,7 @@ def removeCamera():
 			device_id = (parts[0] + '\\' + parts[1]).replace('&', '^&')
 			subprocess.Popen(['C:\devcon\devcon.exe', 'remove', device_id], shell=True)
 
-def getRegionsData (file, regions):
+def getRegionsData (file, regions, delete=False):
 	im = Image.open(file)
 	result = []
 
@@ -55,6 +57,9 @@ def getRegionsData (file, regions):
 	#im.save(jpeg_image_buffer, format="PNG")
 	im.save(jpeg_image_buffer, format="JPEG")
 	image_string = base64.b64encode(jpeg_image_buffer.getvalue())
+
+	if delete:
+		os.remove(file)
 
 	return result, image_string
 
@@ -103,3 +108,11 @@ def _convert_to_degress(value):
 	s = float(value.values[2].num) / float(value.values[2].den)
 
 	return d + (m / 60.0) + (s / 3600.0)
+
+def sendDataToSerialPorts(data):
+	for port in list_ports.comports():
+		print 'Sending data to serial port ' + port.device
+		ser = serial.Serial(port.device)
+		ser.write(data)
+		time.sleep(1)
+		ser.close()

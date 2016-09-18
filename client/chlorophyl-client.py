@@ -31,7 +31,7 @@ def getImageData():
 
 	print 'reading '+max_file
 	lat, lon, exif_date = clib.getLatLonDate(max_file)
-	image_data, image_string = clib.getRegionsData(max_file, state['regions'])
+	image_data, image_string = clib.getRegionsData(max_file, state['regions'], delete=config['delete_source_file'])
 	print image_data
 
 	return {
@@ -67,3 +67,9 @@ try:
 	urllib2.urlopen(config['remote_server_url']+'/add_report', urllib.urlencode(post_data), timeout=5).read()
 except:
 	pass
+
+if config['publish_to_serial']:
+	del post_data['image_string']
+	clib.sendDataToSerialPorts(json.dumps(post_data))
+
+
