@@ -59,6 +59,7 @@ def getRegionsData (file, regions, delete=False):
 	image_string = base64.b64encode(jpeg_image_buffer.getvalue())
 
 	if delete:
+		print 'Removing source file ' + file
 		os.remove(file)
 
 	return result, image_string
@@ -111,8 +112,11 @@ def _convert_to_degress(value):
 
 def sendDataToSerialPorts(data):
 	for port in list_ports.comports():
-		print 'Sending data to serial port ' + port.device
-		ser = serial.Serial(port.device)
-		ser.write(data)
-		time.sleep(1)
-		ser.close()
+		try:
+			print 'Sending data to serial port ' + port.device
+			ser = serial.Serial(port.device)
+			ser.write(data)
+			time.sleep(1)
+			ser.close()
+		except:
+			print 'Failed to write to ' + port.device
