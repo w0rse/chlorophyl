@@ -7,7 +7,7 @@ config = json.loads(open('config/config.json', 'r').read())
 
 devices = json.loads(urllib2.urlopen(config['local_server_url']+'/get_config').read())
 state = devices[int(sys.argv[1])]
-deviceId = state['_id']
+deviceName = state['deviceName']
 print state
 
 folder = sys.argv[2]
@@ -32,7 +32,7 @@ for file in pics:
 		'date': exif_date,
 		'lat': str(lat),
 		'lon': str(lon),
-		'deviceId': deviceId,
+		'deviceName': deviceName,
 	}
 
 	urllib2.urlopen(config['local_server_url']+'/add_report', urllib.urlencode(post_data)).read()

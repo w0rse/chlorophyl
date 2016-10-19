@@ -46,7 +46,7 @@ app.post('/add_device', function (req, res) {
 	res.send(c._id);
 });
 app.get('/get_data', function (req, res) {
-	models.Report.find({deviceId: req.query.id}, 'date values metrics').sort('-date').limit(100).exec(function(err, doc) {
+	models.Report.find({deviceId: req.query.id}, 'date values metrics').sort('-date').limit(1000).exec(function(err, doc) {
 		res.send(doc);
 	});
 });
@@ -57,8 +57,8 @@ app.get('/get_last_pic', function (req, res) {
 });
 
 app.post('/add_report', function (req, res) {
-	var deviceId = req.body.deviceId || '';
-	models.Config.findOne({_id: deviceId}, function(err, doc) {
+	var deviceName = req.body.deviceName || '';
+	models.Config.findOne({deviceName: deviceName}, function(err, doc) {
 		var report = new models.Report();
 		report.values = JSON.parse(req.body.image_data);
 		report.picture = req.body.image_string || '';
@@ -66,7 +66,7 @@ app.post('/add_report', function (req, res) {
 			lat: req.body.lat,
 			lon: req.body.lon,
 		} : {};
-		report.deviceId = doc ? deviceId : config[0]._id;
+		report.deviceId = doc ? doc.deviceName : config[0].deviceName;
 		if (req.body.date) {
 			report.date = new Date(req.body.date);
 		}
