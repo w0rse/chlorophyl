@@ -66,7 +66,7 @@ app.post('/add_report', function (req, res) {
 			lat: req.body.lat,
 			lon: req.body.lon,
 		} : {};
-		report.deviceId = doc ? doc.deviceName : config[0].deviceName;
+		report.deviceId = doc ? doc._id : config[0]._id;
 		if (req.body.date) {
 			report.date = new Date(req.body.date);
 		}
