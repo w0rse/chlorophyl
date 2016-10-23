@@ -63,7 +63,9 @@ function selectDevice (id) {
 	removeRegions();
 
 	var deviceConfig = config.find(function(e) { return e._id === id; });
-	deviceConfig.regions.forEach(addRegion);
+	if (deviceConfig.regions) {
+		deviceConfig.regions.forEach(addRegion);
+	}
 
 	getDeviceData();
 }
